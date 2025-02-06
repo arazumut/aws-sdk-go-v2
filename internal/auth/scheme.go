@@ -8,24 +8,15 @@ import (
 	"github.com/aws/smithy-go/middleware"
 )
 
-// SigV4 is a constant representing
-// Authentication Scheme Signature Version 4
-const SigV4 = "sigv4"
+// SigV4, SigV4A, SigV4S3Express ve None sabitleri AWS kimlik doğrulama şemalarını temsil eder.
+const (
+	SigV4          = "sigv4"
+	SigV4A         = "sigv4a"
+	SigV4S3Express = "sigv4-s3express"
+	None           = "none"
+)
 
-// SigV4A is a constant representing
-// Authentication Scheme Signature Version 4A
-const SigV4A = "sigv4a"
-
-// SigV4S3Express identifies the S3 S3Express auth scheme.
-const SigV4S3Express = "sigv4-s3express"
-
-// None is a constant representing the
-// None Authentication Scheme
-const None = "none"
-
-// SupportedSchemes is a data structure
-// that indicates the list of supported AWS
-// authentication schemes
+// SupportedSchemes, desteklenen AWS kimlik doğrulama şemalarının listesini gösteren bir veri yapısıdır.
 var SupportedSchemes = map[string]bool{
 	SigV4:          true,
 	SigV4A:         true,
@@ -33,13 +24,12 @@ var SupportedSchemes = map[string]bool{
 	None:           true,
 }
 
-// AuthenticationScheme is a representation of
-// AWS authentication schemes
+// AuthenticationScheme, AWS kimlik doğrulama şemalarının bir temsilidir.
 type AuthenticationScheme interface {
 	isAuthenticationScheme()
 }
 
-// AuthenticationSchemeV4 is a AWS SigV4 representation
+// AuthenticationSchemeV4, AWS SigV4'ün bir temsilidir.
 type AuthenticationSchemeV4 struct {
 	Name                  string
 	SigningName           *string
@@ -49,7 +39,7 @@ type AuthenticationSchemeV4 struct {
 
 func (a *AuthenticationSchemeV4) isAuthenticationScheme() {}
 
-// AuthenticationSchemeV4A is a AWS SigV4A representation
+// AuthenticationSchemeV4A, AWS SigV4A'nın bir temsilidir.
 type AuthenticationSchemeV4A struct {
 	Name                  string
 	SigningName           *string
@@ -59,32 +49,28 @@ type AuthenticationSchemeV4A struct {
 
 func (a *AuthenticationSchemeV4A) isAuthenticationScheme() {}
 
-// AuthenticationSchemeNone is a representation for the none auth scheme
+// AuthenticationSchemeNone, none kimlik doğrulama şemasının bir temsilidir.
 type AuthenticationSchemeNone struct{}
 
 func (a *AuthenticationSchemeNone) isAuthenticationScheme() {}
 
-// NoAuthenticationSchemesFoundError is used in signaling
-// that no authentication schemes have been specified.
+// NoAuthenticationSchemesFoundError, hiçbir kimlik doğrulama şeması belirtilmediğini işaret etmek için kullanılır.
 type NoAuthenticationSchemesFoundError struct{}
 
 func (e *NoAuthenticationSchemesFoundError) Error() string {
-	return fmt.Sprint("No authentication schemes specified.")
+	return fmt.Sprint("Hiçbir kimlik doğrulama şeması belirtilmedi.")
 }
 
-// UnSupportedAuthenticationSchemeSpecifiedError is used in
-// signaling that only unsupported authentication schemes
-// were specified.
+// UnSupportedAuthenticationSchemeSpecifiedError, yalnızca desteklenmeyen kimlik doğrulama şemalarının belirtildiğini işaret etmek için kullanılır.
 type UnSupportedAuthenticationSchemeSpecifiedError struct {
 	UnsupportedSchemes []string
 }
 
 func (e *UnSupportedAuthenticationSchemeSpecifiedError) Error() string {
-	return fmt.Sprint("Unsupported authentication scheme specified.")
+	return fmt.Sprint("Desteklenmeyen kimlik doğrulama şeması belirtildi.")
 }
 
-// GetAuthenticationSchemes extracts the relevant authentication scheme data
-// into a custom strongly typed Go data structure.
+// GetAuthenticationSchemes, ilgili kimlik doğrulama şeması verilerini özel olarak güçlü bir şekilde yazılmış Go veri yapısına çıkarır.
 func GetAuthenticationSchemes(p *smithy.Properties) ([]AuthenticationScheme, error) {
 	var result []AuthenticationScheme
 	if !p.Has("authSchemes") {
@@ -135,20 +121,12 @@ func GetAuthenticationSchemes(p *smithy.Properties) ([]AuthenticationScheme, err
 
 type disableDoubleEncoding struct{}
 
-// SetDisableDoubleEncoding sets or modifies the disable double encoding option
-// on the context.
-//
-// Scoped to stack values. Use github.com/aws/smithy-go/middleware#ClearStackValues
-// to clear all stack values.
+// SetDisableDoubleEncoding, bağlam üzerinde çift kodlamayı devre dışı bırakma seçeneğini ayarlar veya değiştirir.
 func SetDisableDoubleEncoding(ctx context.Context, value bool) context.Context {
 	return middleware.WithStackValue(ctx, disableDoubleEncoding{}, value)
 }
 
-// GetDisableDoubleEncoding retrieves the disable double encoding option
-// from the context.
-//
-// Scoped to stack values. Use github.com/aws/smithy-go/middleware#ClearStackValues
-// to clear all stack values.
+// GetDisableDoubleEncoding, bağlamdan çift kodlamayı devre dışı bırakma seçeneğini alır.
 func GetDisableDoubleEncoding(ctx context.Context) (value bool, ok bool) {
 	value, ok = middleware.GetStackValue(ctx, disableDoubleEncoding{}).(bool)
 	return value, ok

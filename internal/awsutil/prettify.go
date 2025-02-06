@@ -8,15 +8,15 @@ import (
 	"strings"
 )
 
-// Prettify returns the string representation of a value.
+// Prettify bir değerin string temsilini döndürür.
 func Prettify(i interface{}) string {
 	var buf bytes.Buffer
 	prettify(reflect.ValueOf(i), 0, &buf)
 	return buf.String()
 }
 
-// prettify will recursively walk value v to build a textual
-// representation of the value.
+// prettify değeri v'yi yinelemeli olarak dolaşarak değerin
+// metinsel temsilini oluşturur.
 func prettify(v reflect.Value, indent int, buf *bytes.Buffer) {
 	isPtr := false
 	for v.Kind() == reflect.Ptr {
@@ -45,10 +45,10 @@ func prettify(v reflect.Value, indent int, buf *bytes.Buffer) {
 			name := v.Type().Field(i).Name
 			f := v.Field(i)
 			if name[0:1] == strings.ToLower(name[0:1]) {
-				continue // ignore unexported fields
+				continue // özel alanları yoksay
 			}
 			if (f.Kind() == reflect.Ptr || f.Kind() == reflect.Slice || f.Kind() == reflect.Map) && f.IsNil() {
-				continue // ignore unset fields
+				continue // ayarlanmamış alanları yoksay
 			}
 			names = append(names, name)
 		}
@@ -106,7 +106,7 @@ func prettify(v reflect.Value, indent int, buf *bytes.Buffer) {
 		buf.WriteString("\n" + strings.Repeat(" ", indent) + "}")
 	default:
 		if !v.IsValid() {
-			fmt.Fprint(buf, "<invalid value>")
+			fmt.Fprint(buf, "<geçersiz değer>")
 			return
 		}
 

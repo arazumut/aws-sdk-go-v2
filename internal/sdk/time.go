@@ -11,24 +11,17 @@ func init() {
 	SleepWithContext = sleepWithContext
 }
 
-// NowTime is a value for getting the current time. This value can be overridden
-// for testing mocking out current time.
+// NowTime, mevcut zamanı almak için kullanılan bir değerdir. Bu değer, testlerde mevcut zamanı taklit etmek için değiştirilebilir.
 var NowTime func() time.Time
 
-// Sleep is a value for sleeping for a duration. This value can be overridden
-// for testing and mocking out sleep duration.
+// Sleep, belirli bir süre uyumak için kullanılan bir değerdir. Bu değer, testlerde uyuma süresini taklit etmek için değiştirilebilir.
 var Sleep func(time.Duration)
 
-// SleepWithContext will wait for the timer duration to expire, or the context
-// is canceled. Which ever happens first. If the context is canceled the Context's
-// error will be returned.
-//
-// This value can be overridden for testing and mocking out sleep duration.
+// SleepWithContext, zamanlayıcı süresi dolana kadar veya context iptal edilene kadar bekler. Hangisi önce gerçekleşirse. Eğer context iptal edilirse, Context'in hatası döndürülür.
+// Bu değer, testlerde uyuma süresini taklit etmek için değiştirilebilir.
 var SleepWithContext func(context.Context, time.Duration) error
 
-// sleepWithContext will wait for the timer duration to expire, or the context
-// is canceled. Which ever happens first. If the context is canceled the
-// Context's error will be returned.
+// sleepWithContext, zamanlayıcı süresi dolana kadar veya context iptal edilene kadar bekler. Hangisi önce gerçekleşirse. Eğer context iptal edilirse, Context'in hatası döndürülür.
 func sleepWithContext(ctx context.Context, dur time.Duration) error {
 	t := time.NewTimer(dur)
 	defer t.Stop()
@@ -43,15 +36,15 @@ func sleepWithContext(ctx context.Context, dur time.Duration) error {
 	return nil
 }
 
-// noOpSleepWithContext does nothing, returns immediately.
+// noOpSleepWithContext hiçbir şey yapmaz, hemen döner.
 func noOpSleepWithContext(context.Context, time.Duration) error {
 	return nil
 }
 
+// noOpSleep hiçbir şey yapmaz, hemen döner.
 func noOpSleep(time.Duration) {}
 
-// TestingUseNopSleep is a utility for disabling sleep across the SDK for
-// testing.
+// TestingUseNopSleep, SDK genelinde uyumayı devre dışı bırakmak için kullanılan bir yardımcı işlevdir.
 func TestingUseNopSleep() func() {
 	SleepWithContext = noOpSleepWithContext
 	Sleep = noOpSleep
@@ -62,8 +55,7 @@ func TestingUseNopSleep() func() {
 	}
 }
 
-// TestingUseReferenceTime is a utility for swapping the time function across the SDK to return a specific reference time
-// for testing purposes.
+// TestingUseReferenceTime, test amaçları için SDK genelinde belirli bir referans zamanı döndüren zaman işlevini değiştirmek için kullanılan bir yardımcı işlevdir.
 func TestingUseReferenceTime(referenceTime time.Time) func() {
 	NowTime = func() time.Time {
 		return referenceTime

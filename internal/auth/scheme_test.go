@@ -7,7 +7,7 @@ import (
 )
 
 func TestV4(t *testing.T) {
-
+	// V4 özelliklerini tanımla
 	propsV4 := smithy.Properties{}
 
 	propsV4.Set("authSchemes", interface{}([]interface{}{
@@ -19,29 +19,32 @@ func TestV4(t *testing.T) {
 		},
 	}))
 
+	// Kimlik doğrulama şemalarını al
 	result, err := GetAuthenticationSchemes(&propsV4)
 	if err != nil {
-		t.Fatalf("Did not expect error, got %v", err)
+		t.Fatalf("Hata beklenmiyordu, aldık %v", err)
 	}
 
+	// Sonucun beklenen AuthenticationScheme türünde olup olmadığını kontrol et
 	_, ok := result[0].(AuthenticationScheme)
 	if !ok {
-		t.Fatalf("Did not get expected AuthenticationScheme. %v", result[0])
+		t.Fatalf("Beklenen AuthenticationScheme alınamadı. %v", result[0])
 	}
 
+	// Sonucun beklenen AuthenticationSchemeV4 türünde olup olmadığını kontrol et
 	v4Scheme, ok := result[0].(*AuthenticationSchemeV4)
 	if !ok {
-		t.Fatalf("Did not get expected AuthenticationSchemeV4. %v", result[0])
+		t.Fatalf("Beklenen AuthenticationSchemeV4 alınamadı. %v", result[0])
 	}
 
+	// İmza sürüm adının doğru olup olmadığını kontrol et
 	if v4Scheme.Name != "sigv4" {
-		t.Fatalf("Did not get expected AuthenticationSchemeV4 signer version name")
+		t.Fatalf("Beklenen AuthenticationSchemeV4 imza sürüm adı alınamadı")
 	}
-
 }
 
 func TestV4A(t *testing.T) {
-
+	// V4A özelliklerini tanımla
 	propsV4A := smithy.Properties{}
 
 	propsV4A.Set("authSchemes", []interface{}{
@@ -53,28 +56,32 @@ func TestV4A(t *testing.T) {
 		},
 	})
 
+	// Kimlik doğrulama şemalarını al
 	result, err := GetAuthenticationSchemes(&propsV4A)
 	if err != nil {
-		t.Fatalf("Did not expect error, got %v", err)
+		t.Fatalf("Hata beklenmiyordu, aldık %v", err)
 	}
 
+	// Sonucun beklenen AuthenticationScheme türünde olup olmadığını kontrol et
 	_, ok := result[0].(AuthenticationScheme)
 	if !ok {
-		t.Fatalf("Did not get expected AuthenticationScheme. %v", result[0])
+		t.Fatalf("Beklenen AuthenticationScheme alınamadı. %v", result[0])
 	}
 
+	// Sonucun beklenen AuthenticationSchemeV4A türünde olup olmadığını kontrol et
 	v4AScheme, ok := result[0].(*AuthenticationSchemeV4A)
 	if !ok {
-		t.Fatalf("Did not get expected AuthenticationSchemeV4A. %v", result[0])
+		t.Fatalf("Beklenen AuthenticationSchemeV4A alınamadı. %v", result[0])
 	}
 
+	// İmza sürüm adının doğru olup olmadığını kontrol et
 	if v4AScheme.Name != "sigv4a" {
-		t.Fatalf("Did not get expected AuthenticationSchemeV4A signer version name")
+		t.Fatalf("Beklenen AuthenticationSchemeV4A imza sürüm adı alınamadı")
 	}
-
 }
 
 func TestV4S3Express(t *testing.T) {
+	// V4S3Express özelliklerini tanımla
 	props := smithy.Properties{}
 	props.Set("authSchemes", []interface{}{
 		map[string]interface{}{
@@ -85,17 +92,20 @@ func TestV4S3Express(t *testing.T) {
 		},
 	})
 
+	// Kimlik doğrulama şemalarını al
 	result, err := GetAuthenticationSchemes(&props)
 	if err != nil {
-		t.Fatalf("Did not expect error, got %v", err)
+		t.Fatalf("Hata beklenmiyordu, aldık %v", err)
 	}
 
+	// Sonucun beklenen AuthenticationSchemeV4 türünde olup olmadığını kontrol et
 	scheme, ok := result[0].(*AuthenticationSchemeV4)
 	if !ok {
-		t.Fatalf("Did not get expected AuthenticationSchemeV4. %v", result[0])
+		t.Fatalf("Beklenen AuthenticationSchemeV4 alınamadı. %v", result[0])
 	}
 
+	// İmza sürüm adının doğru olup olmadığını kontrol et
 	if scheme.Name != SigV4S3Express {
-		t.Fatalf("expected %s, got %s", SigV4S3Express, scheme.Name)
+		t.Fatalf("beklenen %s, aldık %s", SigV4S3Express, scheme.Name)
 	}
 }

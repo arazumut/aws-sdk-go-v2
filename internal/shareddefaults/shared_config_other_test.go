@@ -9,6 +9,7 @@ import (
 	"testing"
 
 	"github.com/aws/aws-sdk-go-v2/internal/awstesting"
+
 	"github.com/aws/aws-sdk-go-v2/internal/shareddefaults"
 )
 
@@ -38,6 +39,31 @@ func TestSharedConfigFilename(t *testing.T) {
 
 	name := shareddefaults.SharedConfigFilename()
 	if e, a := expect, name; e != a {
+		t.Errorf("expect %q shared config filename, got %q", e, a)
+	}
+}
+func TestCustomSharedCredsFilename(t *testing.T) {
+	restoreEnv := awstesting.StashEnv()
+	defer awstesting.PopEnv(restoreEnv)
+
+	customPath := filepath.Join("custom_dir", ".aws", "credentials")
+	os.Setenv("AWS_SHARED_CREDENTIALS_FILE", customPath)
+
+	name := shareddefaults.SharedCredentialsFilename()
+	if e, a := customPath, name; e != a {
+		t.Errorf("expect %q shared creds filename, got %q", e, a)
+	}
+}
+
+func TestCustomSharedConfigFilename(t *testing.T) {
+	restoreEnv := awstesting.StashEnv()
+	defer awstesting.PopEnv(restoreEnv)
+
+	customPath := filepath.Join("custom_dir", ".aws", "config")
+	os.Setenv("AWS_CONFIG_FILE", customPath)
+
+	name := shareddefaults.SharedConfigFilename()
+	if e, a := customPath, name; e != a {
 		t.Errorf("expect %q shared config filename, got %q", e, a)
 	}
 }

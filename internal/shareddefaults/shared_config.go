@@ -6,10 +6,10 @@ import (
 	"path/filepath"
 )
 
-// SharedCredentialsFilename returns the SDK's default file path
-// for the shared credentials file.
+// SharedCredentialsFilename, SDK'nın paylaşılan kimlik bilgileri dosyası için
+// varsayılan dosya yolunu döndürür.
 //
-// Builds the shared config file path based on the OS's platform.
+// İşletim sisteminin platformuna göre paylaşılan yapılandırma dosyası yolunu oluşturur.
 //
 //   - Linux/Unix: $HOME/.aws/credentials
 //   - Windows: %USERPROFILE%\.aws\credentials
@@ -17,10 +17,10 @@ func SharedCredentialsFilename() string {
 	return filepath.Join(UserHomeDir(), ".aws", "credentials")
 }
 
-// SharedConfigFilename returns the SDK's default file path for
-// the shared config file.
+// SharedConfigFilename, SDK'nın paylaşılan yapılandırma dosyası için
+// varsayılan dosya yolunu döndürür.
 //
-// Builds the shared config file path based on the OS's platform.
+// İşletim sisteminin platformuna göre paylaşılan yapılandırma dosyası yolunu oluşturur.
 //
 //   - Linux/Unix: $HOME/.aws/config
 //   - Windows: %USERPROFILE%\.aws\config
@@ -28,10 +28,9 @@ func SharedConfigFilename() string {
 	return filepath.Join(UserHomeDir(), ".aws", "config")
 }
 
-// UserHomeDir returns the home directory for the user the process is
-// running under.
+// UserHomeDir, işlemin çalıştığı kullanıcının ana dizinini döndürür.
 func UserHomeDir() string {
-	// Ignore errors since we only care about Windows and *nix.
+	// Hataları yok say çünkü sadece Windows ve *nix ile ilgileniyoruz.
 	home, _ := os.UserHomeDir()
 
 	if len(home) > 0 {

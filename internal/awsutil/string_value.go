@@ -52,6 +52,7 @@ func stringValue(v reflect.Value, indent int, buf *bytes.Buffer) {
 		if v.Len() > 3 {
 			nl, id, id2 = "\n", strings.Repeat(" ", indent), strings.Repeat(" ", indent+2)
 		}
+
 		buf.WriteString("[" + nl)
 		for i := 0; i < v.Len(); i++ {
 			buf.WriteString(id2)

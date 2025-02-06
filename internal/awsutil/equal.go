@@ -4,27 +4,26 @@ import (
 	"reflect"
 )
 
-// DeepEqual returns if the two values are deeply equal like reflect.DeepEqual.
-// In addition to this, this method will also dereference the input values if
-// possible so the DeepEqual performed will not fail if one parameter is a
-// pointer and the other is not.
+// DeepEqual, iki değerin reflect.DeepEqual gibi derinlemesine eşit olup olmadığını döndürür.
+// Buna ek olarak, bu yöntem mümkünse giriş değerlerini de referansını çözerek
+// bir parametre pointer iken diğerinin olmaması durumunda DeepEqual işleminin başarısız olmasını önler.
 //
-// DeepEqual will not perform indirection of nested values of the input parameters.
+// DeepEqual, giriş parametrelerinin iç içe geçmiş değerlerinin dolaylılığını gerçekleştirmez.
 func DeepEqual(a, b interface{}) bool {
 	ra := reflect.Indirect(reflect.ValueOf(a))
 	rb := reflect.Indirect(reflect.ValueOf(b))
 
 	if raValid, rbValid := ra.IsValid(), rb.IsValid(); !raValid && !rbValid {
-		// If the elements are both nil, and of the same type the are equal
-		// If they are of different types they are not equal
+		// Eğer elemanlar her ikisi de nil ise ve aynı türde iseler eşittirler
+		// Farklı türde iseler eşit değillerdir
 		return reflect.TypeOf(a) == reflect.TypeOf(b)
 	} else if raValid != rbValid {
-		// Both values must be valid to be equal
+		// Her iki değer de eşit olmak için geçerli olmalıdır
 		return false
 	}
 
-	// Special casing for strings as typed enumerations are string aliases
-	// but are not deep equal.
+	// Stringler için özel durum, çünkü tiplenmiş enumerasyonlar string alias'larıdır
+	// fakat derinlemesine eşit değildirler.
 	if ra.Kind() == reflect.String && rb.Kind() == reflect.String {
 		return ra.String() == rb.String()
 	}
